@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "246034683494",
+    "project_id": "picturesque-af46e",
+    "storage_bucket": "picturesque-af46e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246034683494:android:06faa4575833738805ffa7",
+        "android_client_info": {
+          "package_name": "com.example.picturesque"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246034683494-5eg2mj5n3rmfaovbat9f752dj7d614i8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJZTKxiSDCsxvTbNcH5vJ43RPo_S13r30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246034683494-5eg2mj5n3rmfaovbat9f752dj7d614i8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
