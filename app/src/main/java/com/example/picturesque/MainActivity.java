@@ -76,9 +76,6 @@ public class MainActivity extends  AppCompatActivity {
         }
         // [END image_from_path]
         labelImages(image); // Magic Here
-        labelImages(image); // Magic Here
-
-
         configureAndRunImageLabeler(image);
 
 
@@ -98,13 +95,6 @@ public class MainActivity extends  AppCompatActivity {
         // [START get_detector_options]
         ImageLabeler labeler = ImageLabeling.getClient(options);
         // [END get_detector_options]
-
-        /*
-        // [START get_detector_default]
-        // Or use the default options:
-        //ImageLabeler detector = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
-        // [END get_detector_default]
-        */
 
         // [START run_detector]
         Task<List<ImageLabel>> result =
@@ -171,8 +161,6 @@ public class MainActivity extends  AppCompatActivity {
                             System.out.println("THESE are the index NUMBERS after HHAHAH!!!!!!!: "+text);
                             System.out.println(label2);
 
-
-
                         }
                         System.out.println("Outside the main: "+ label2);
                         String dude = " ";
@@ -187,6 +175,7 @@ public class MainActivity extends  AppCompatActivity {
                         System.out.println("Outside the dude main: "+ dude);
                         displayLotteryNumberToUser(dude);
                         // [END get_image_label_info]
+                        System.out.println(dude);
                     }
                 });
 
