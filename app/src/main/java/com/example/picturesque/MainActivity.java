@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        // Fixes logout error
         mGoogleSignInClient.signOut();
     }
 
