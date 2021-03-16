@@ -54,12 +54,13 @@ public class ChooseImg extends AppCompatActivity {
         });
     }
 
-    // HOPEFULLY implements login button
+    // implements logout button
     public void buttonClicked(View view){
         if(view.getId() == R.id.logout){
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
+           this.finish();
         }
         }
     //}
