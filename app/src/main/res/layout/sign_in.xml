@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dbSignIn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center|center_horizontal"
     android:orientation="vertical"
+    android:rotationY="0"
     tools:context=".MainActivity">
 
     <com.google.android.gms.common.SignInButton
@@ -13,6 +15,12 @@
         android:layout_height="70dp"
         app:buttonSize="wide"
         app:colorScheme="dark" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="Sign In With Dropbox" />
 
 
 </LinearLayout>
