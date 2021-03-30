@@ -4,10 +4,21 @@ plugins {
 }
 
 android {
+packagingOptions {
+    exclude 'META-INF/DEPENDENCIES'
+    exclude 'META-INF/LICENSE'
+    exclude 'META-INF/LICENSE.txt'
+    exclude 'META-INF/license.txt'
+    exclude 'META-INF/NOTICE'
+    exclude 'META-INF/NOTICE.txt'
+    exclude 'META-INF/notice.txt'
+    exclude 'META-INF/ASL2.0'
+}
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
+
         applicationId "com.example.picturesque"
         minSdkVersion 24
         targetSdkVersion 30
@@ -29,6 +40,8 @@ android {
     }
 }
 
+
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -39,6 +52,7 @@ dependencies {
     implementation 'com.google.mlkit:image-labeling:17.0.2'
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.firebase:firebase-storage:19.2.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -50,5 +64,28 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     implementation 'com.dropbox.core:dropbox-core-sdk:3.2.0'
+
+
+    // from integrate REST api on Android
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation('com.google.api-client:google-api-client-android:1.26.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+    // DBX
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    //noinspection GradleCompatible
+    compile 'com.android.support:design:23.2.1'
+
+    compile 'com.dropbox.core:dropbox-core-sdk:2.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
 
 }

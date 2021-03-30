@@ -2,9 +2,7 @@ package com.example.picturesque;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.widget.Toast;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -51,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void createRequest() {
-
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com")
@@ -88,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -105,8 +103,4 @@ public class MainActivity extends AppCompatActivity {
 
                     // ...
                 });
-    }
-
-}
-
-//}
+    }}
