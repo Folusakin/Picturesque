@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,7 +48,7 @@ public class ChooseImg extends AppCompatActivity {
     private static final int PICK_IMAGE = 100;
     Uri imageUri;
    // private Object OnCompleteListener;
-
+    private static final int IMAGE_REQUEST = 2;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -55,6 +56,7 @@ public class ChooseImg extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageView = (ImageView)findViewById(R.id.imageView);
         button = (Button)findViewById(R.id.buttonLoadPicture);
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,9 +76,27 @@ public class ChooseImg extends AppCompatActivity {
            this.finish();
         }
         }
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
+
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
+            imageUri = data.getData();
+
+            uploadImage();
+        }
+    }*/
+
+
 
     // if the upload button is clicked
     public void uploadClicked(View view){
+        openGallery();
         uploadImage();
     }
 
