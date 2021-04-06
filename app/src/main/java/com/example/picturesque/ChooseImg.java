@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.mlkit.vision.common.InputImage;
@@ -23,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,25 +38,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
+
 public class ChooseImg extends AppCompatActivity {
-
-
-
+    int upload_img = 0;
     InputImage image;
     ImageView imageView;
     Button button;
+
     private static final int PICK_IMAGE = 100;
     Uri imageUri;
+    Uri imageUri2;
     // private Object OnCompleteListener;
     private static final int IMAGE_REQUEST = 2;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        imageView = (ImageView)findViewById(R.id.imageView);
-        button = (Button)findViewById(R.id.buttonLoadPicture);
-
+        imageView = (ImageView) findViewById(R.id.imageView);
+        button = (Button) findViewById(R.id.buttonLoadPicture);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,14 +69,15 @@ public class ChooseImg extends AppCompatActivity {
     }
 
     // implements logout button
-    public void buttonClicked(View view){
-        if(view.getId() == R.id.logout){
+    public void buttonClicked(View view) {
+        if (view.getId() == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             this.finish();
         }
     }
+
     private void openImage() {
         Intent intent = new Intent();
         intent.setType("image/");
@@ -92,14 +94,46 @@ public class ChooseImg extends AppCompatActivity {
     }*/
 
 
-
     // if the upload button is clicked
-    public void uploadClicked(View view){
+    public void uploadClicked(View view) {
+        upload_img = 1;
         openGallery();
         uploadImage();
+
+/*        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+        erence storageRef = FirebaseStorage.getInstance().reference().child("folderName/file.jpg");
+StorageRef
+// Get reference to the file
+        StorageReference forestRef = storageRef.child("uploads/IMG_3601.jpg");
+
+        forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                // Metadata now contains the metadata for 'images/forest.jpg'
+                System.out.println(Metadata);
+            }
+        }).addOnFailureListener(exception -> {
+            // Uh-oh, an error occurred!
+        });*/
+
+       /* refToFile.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+
+                String hash =  storageMetadata.getMd5Hash();
+                Log.e("md5hash", "onSuccess: "+hash );
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
+        });*/
+
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
 
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
@@ -112,22 +146,24 @@ public class ChooseImg extends AppCompatActivity {
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Uploading");
         pd.show();
-        if (imageUri != null) {
-            StorageReference filRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+        if (imageUri2 != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis() + "." + getFileExtension(imageUri2));
 
             // Put the file in the cloud
-            filRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            fileRef.putFile(imageUri2).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    filRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            String url = imageUri.toString();
+                            String url = imageUri2.toString();
 
                             Log.d("DownloadUrl", url);
                             // dismissing the loading thing
                             pd.dismiss();
-                            Toast.makeText(ChooseImg.this, "Image upload successfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChooseImg.this, "Image upload successful", Toast.LENGTH_SHORT).show();
+
+
 
                         }
                     });
@@ -143,10 +179,14 @@ public class ChooseImg extends AppCompatActivity {
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, PICK_IMAGE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+        if(upload_img == 1){
+            imageUri2 = data.getData();
+        }
+        else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
         }
@@ -154,7 +194,7 @@ public class ChooseImg extends AppCompatActivity {
         try {
 
             image = InputImage.fromFilePath(getApplicationContext(), imageUri);
-            System.out.println("the image: "+image);
+            System.out.println("the image: " + image);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -240,30 +280,29 @@ public class ChooseImg extends AppCompatActivity {
                             int index = label.getIndex();
 
                             label2.add(text);
-                            System.out.println("THESE are the index NUMBERS HHAHAH!!!!!!!: "+text);
+                            System.out.println("THESE are the index NUMBERS HHAHAH!!!!!!!: " + text);
 
-                            System.out.println("THESE are the index NUMBERS after HHAHAH!!!!!!!: "+text);
+                            System.out.println("THESE are the index NUMBERS after HHAHAH!!!!!!!: " + text);
                             System.out.println(label2);
 
                         }
-                        System.out.println("Outside the main: "+ label2);
+                        System.out.println("Outside the main: " + label2);
                         String dude = " ";
                         for (int i = 0; i < label2.size(); i++) {
 
-                            if(i>0 && label2.get(i) == "Dude")
+                            if (i > 0 && label2.get(i) == "Dude")
                                 dude = label2.get(i);
-                            else if (i>0)
-                                dude = dude+label2.get(i)+"\n";
+                            else if (i > 0)
+                                dude = dude + label2.get(i) + "\n";
 
                         }
-                        System.out.println("Outside the dude main: "+ dude);
+                        System.out.println("Outside the dude main: " + dude);
                         displayLotteryNumberToUser(dude);
                         // [END get_image_label_info]
                         System.out.println(dude);
                     }
                 });
 
-
     }
-
 }
+
