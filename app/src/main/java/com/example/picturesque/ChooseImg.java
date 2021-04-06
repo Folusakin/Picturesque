@@ -1,19 +1,29 @@
 package com.example.picturesque;
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.mlkit.vision.common.InputImage;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +47,8 @@ public class ChooseImg extends AppCompatActivity {
     Button button;
     private static final int PICK_IMAGE = 100;
     Uri imageUri;
+    // private Object OnCompleteListener;
+    private static final int IMAGE_REQUEST = 2;
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -44,6 +56,7 @@ public class ChooseImg extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         imageView = (ImageView)findViewById(R.id.imageView);
         button = (Button)findViewById(R.id.buttonLoadPicture);
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,9 +73,72 @@ public class ChooseImg extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
-           this.finish();
+            this.finish();
         }
     }
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
+
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK){
+            imageUri = data.getData();
+            uploadImage();
+        }
+    }*/
+
+
+
+    // if the upload button is clicked
+    public void uploadClicked(View view){
+        openGallery();
+        uploadImage();
+    }
+
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImage() {
+
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("Uploading");
+        pd.show();
+        if (imageUri != null) {
+            StorageReference filRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+            // Put the file in the cloud
+            filRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    filRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = imageUri.toString();
+
+                            Log.d("DownloadUrl", url);
+                            // dismissing the loading thing
+                            pd.dismiss();
+                            Toast.makeText(ChooseImg.this, "Image upload successfull", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+            });
+        }
+
+
+    }
+
+
     private void openGallery() {
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, PICK_IMAGE);
