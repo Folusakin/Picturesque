@@ -1,78 +1,34 @@
 {
   "project_info": {
-    "project_number": "491922503762",
-    "project_id": "project-lab-2-304306",
-    "storage_bucket": "project-lab-2-304306.appspot.com"
+    "project_number": "246034683494",
+    "firebase_url": "https://picturesque-af46e-default-rtdb.firebaseio.com",
+    "project_id": "picturesque-af46e",
+    "storage_bucket": "picturesque-af46e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:491922503762:android:6b7909f3ea41b93a3b478b",
-        "android_client_info": {
-          "package_name": "com.example.google_signin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "491922503762-7qil9q3hhc02jlf4jvod30har0ivo2ir.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.google_signin",
-            "certificate_hash": "e0e610362b937f53646564c24f1e5aaca90877e2"
-          }
-        },
-        {
-          "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDYItLHdbNro-clAlSQEvsnFeTbPrq6BKY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:491922503762:android:c3fac9cb028e28063b478b",
+        "mobilesdk_app_id": "1:246034683494:android:06faa4575833738805ffa7",
         "android_client_info": {
           "package_name": "com.example.picturesque"
         }
       },
       "oauth_client": [
         {
-          "client_id": "491922503762-jrolvhr69k5qrcp8t7lkq07fe1i5vijm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.picturesque",
-            "certificate_hash": "e0e610362b937f53646564c24f1e5aaca90877e2"
-          }
-        },
-        {
-          "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
+          "client_id": "246034683494-5eg2mj5n3rmfaovbat9f752dj7d614i8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYItLHdbNro-clAlSQEvsnFeTbPrq6BKY"
+          "current_key": "AIzaSyDJZTKxiSDCsxvTbNcH5vJ43RPo_S13r30"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
+              "client_id": "246034683494-5eg2mj5n3rmfaovbat9f752dj7d614i8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

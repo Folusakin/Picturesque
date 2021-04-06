@@ -133,6 +133,8 @@ public class ChooseImg extends AppCompatActivity {
         // [END run_detector]
     }
 
+
+
     public void configureAndRunImageLabeler(InputImage image) {
         ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
         labeler.process(image)

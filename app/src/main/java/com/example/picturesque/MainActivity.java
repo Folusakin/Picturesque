@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -12,11 +13,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+
 
 public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
@@ -39,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
+        //  FirebaseStorage storage = FirebaseStorage.getInstance();
+       // StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+
         // initialize
         mAuth = FirebaseAuth.getInstance();
-
         createRequest();
-
         findViewById(R.id.user_signIn).setOnClickListener(view -> signIn());
+
+
 
     }
 
@@ -52,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com")
+                .requestIdToken("246034683494-5eg2mj5n3rmfaovbat9f752dj7d614i8.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -105,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
                     // ...
                 });
     }
+
+
+
+
+
 
 }
 
