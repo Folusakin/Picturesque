@@ -146,17 +146,17 @@ StorageRef
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage("Uploading");
         pd.show();
-        if (imageUri2 != null) {
-            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis() + "." + getFileExtension(imageUri2));
+        if (imageUri != null) {
+            StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("uploads").child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
             // Put the file in the cloud
-            fileRef.putFile(imageUri2).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            fileRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            String url = imageUri2.toString();
+                            String url = imageUri.toString();
 
                             Log.d("DownloadUrl", url);
                             // dismissing the loading thing
@@ -184,7 +184,7 @@ StorageRef
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(upload_img == 1){
-            imageUri2 = data.getData();
+            imageUri = data.getData();
         }
         else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             imageUri = data.getData();

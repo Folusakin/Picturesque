@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "491922503762",
-    "project_id": "project-lab-2-304306",
-    "storage_bucket": "project-lab-2-304306.appspot.com"
+    "project_number": "682940950323",
+    "project_id": "picturesque-again",
+    "storage_bucket": "picturesque-again.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:491922503762:android:c3fac9cb028e28063b478b",
+        "mobilesdk_app_id": "1:682940950323:android:a5e0f680cf2e2f51030046",
         "android_client_info": {
           "package_name": "com.example.picturesque"
         }
       },
       "oauth_client": [
         {
-          "client_id": "491922503762-vjuvfpiodep4o7fmrul54kfpv8e4n445.apps.googleusercontent.com",
+          "client_id": "682940950323-uvf5rtknfic4sc9can5609m54lpirk5e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.picturesque",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
+          "client_id": "682940950323-gruhchs0antvt3fm92mlsknnvcmnof3o.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYItLHdbNro-clAlSQEvsnFeTbPrq6BKY"
+          "current_key": "AIzaSyAdaTvM-j6A95SRcNPEERB5mf6ueydKq30"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com",
+              "client_id": "682940950323-gruhchs0antvt3fm92mlsknnvcmnof3o.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

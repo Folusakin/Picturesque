@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("491922503762-bcvmgvt4q0r7vt9ihq91idvgkr90tdar.apps.googleusercontent.com")
+                .requestIdToken("682940950323-gruhchs0antvt3fm92mlsknnvcmnof3o.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
@@ -97,13 +97,14 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        // FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser user = mAuth.getCurrentUser();
                         Intent intent = new Intent(getApplicationContext(),ChooseImg.class);
                         startActivity(intent);
                         //updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(MainActivity.this, "Sorry Bro, no auth for you", Toast.LENGTH_SHORT).show();
+
                     }
 
                     // ...
