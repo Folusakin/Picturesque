@@ -74,7 +74,7 @@
         app:layout_constraintVertical_bias="0.927" />
 
     <Button
-        android:id="@+id/imgupload"
+        android:id="@+id/imageupload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="132dp"
