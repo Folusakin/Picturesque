@@ -23,8 +23,8 @@
 
     <Button
         android:id="@+id/logout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="107dp"
+        android:layout_height="55dp"
         android:layout_marginEnd="95dp"
         android:layout_marginBottom="148dp"
         android:onClick="buttonClicked"
@@ -47,12 +47,13 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="69dp"
         android:layout_marginEnd="61dp"
         android:text="Back"
+        android:onClick="backClicked"
         app:layout_constraintBaseline_toBaselineOf="@+id/logout"
         app:layout_constraintEnd_toStartOf="@+id/logout"
         app:layout_constraintStart_toStartOf="parent" />
