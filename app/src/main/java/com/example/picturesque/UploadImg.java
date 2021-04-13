@@ -1,15 +1,14 @@
+
 package com.example.picturesque;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+
 import android.net.Uri;
 import android.provider.MediaStore;
-/*import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;*/
+
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -54,12 +53,6 @@ public class UploadImg extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_img);
 
-     /*   ActionBar actionBar;
-        actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable
-                = new ColorDrawable(
-                Color.parseColor("#0F9D58"));
-        actionBar.setBackgroundDrawable(colorDrawable);*/
 
         // initialise views
         btnSelect = findViewById(R.id.btnChoose);
@@ -215,35 +208,7 @@ public class UploadImg extends AppCompatActivity {
                             });
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
-
-            // [START metadata_get_storage_reference]
-          /*  // Create a storage reference from our app
             StorageReference storageRef = storage.getReference();
-
-            // Get reference to the file
-            StorageReference forestRef = storageRef.child("images/123093ab-d774-43ca-93a3-a7d44cf2d73a");*/
-            // [END metadata_get_storage_reference]
-//TODO: figure out how to automatically get the filepath from Firebase
-
-            // [START get_file_metadata]
-          /*  forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                @Override
-                public void onSuccess(StorageMetadata storageMetadata) {
-                    System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash() );
-                    System.out.println("This is the size in bytes: " + storageMetadata.getSizeBytes() );
-                    // Metadata now contains the metadata for 'images/forest.jpg'
- //TODO store MD5 Hash for comparison
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    System.out.println("Some sort of error happened >:( ");
-                    // Uh-oh, an error occurred!
-                }
-            });
-            // [END get_file_metadata]
-        }*/
 
             StorageReference listRef = storage.getReference().child("images");
 
@@ -258,14 +223,16 @@ public class UploadImg extends AppCompatActivity {
                                 String refNumber = item.toString();
                                 StorageReference storageRef = storage.getReference();
                                 String sub = stringGrab(refNumber);
-                                System.out.println("THIS IS THE SUBSTRING " + sub);
+
                                 // Get reference to the file
                                 StorageReference forestRef = storageRef.child(sub);
                                 forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                     @Override
                                     public void onSuccess(StorageMetadata storageMetadata) {
+                                        System.out.println("THIS IS THE SUBSTRING " + sub);
                                         System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash());
                                         System.out.println("This is the size in bytes: " + storageMetadata.getSizeBytes());
+                                        System.out.println(" ");
                                         // Metadata now contains the metadata for 'images/forest.jpg'
                                         //TODO store MD5 Hash for comparison
 
@@ -300,16 +267,15 @@ public class UploadImg extends AppCompatActivity {
     }
     public String stringGrab(String Origin)
     {
-       return Origin.substring(35);
+        return Origin.substring(35);
 
     }
 
-// go back
-   public void backClicked(View view) {
+    // go back
+    public void backClicked(View view) {
         if (view.getId() == R.id.btnBack) {
             Intent intent = new Intent(getApplicationContext(), ChooseImg.class);
             startActivity(intent);
         }
     };
 }
-
