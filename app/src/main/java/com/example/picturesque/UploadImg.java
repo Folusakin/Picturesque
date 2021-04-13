@@ -217,16 +217,16 @@ public class UploadImg extends AppCompatActivity {
             FirebaseStorage storage = FirebaseStorage.getInstance();
 
             // [START metadata_get_storage_reference]
-            // Create a storage reference from our app
+          /*  // Create a storage reference from our app
             StorageReference storageRef = storage.getReference();
 
             // Get reference to the file
-            StorageReference forestRef = storageRef.child("images/3fc6cbaa-9a6d-488a-bcdc-da7432497e1d");
+            StorageReference forestRef = storageRef.child("images/123093ab-d774-43ca-93a3-a7d44cf2d73a");*/
             // [END metadata_get_storage_reference]
 //TODO: figure out how to automatically get the filepath from Firebase
 
             // [START get_file_metadata]
-            forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+          /*  forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                 @Override
                 public void onSuccess(StorageMetadata storageMetadata) {
                     System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash() );
@@ -243,36 +243,52 @@ public class UploadImg extends AppCompatActivity {
                 }
             });
             // [END get_file_metadata]
+        }*/
+
+            StorageReference listRef = storage.getReference().child("images");
+
+            listRef.listAll()
+                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            System.out.println("HERE are our Items: ");
+                            for (StorageReference item : listResult.getItems()) {
+
+                                // All the items under listRef.
+                                String refNumber = item.toString();
+                                StorageReference storageRef = storage.getReference();
+                                String sub = stringGrab(refNumber);
+                                System.out.println("THIS IS THE SUBSTRING " + sub);
+                                // Get reference to the file
+                                StorageReference forestRef = storageRef.child(sub);
+                                forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                    @Override
+                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                        System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash());
+                                        System.out.println("This is the size in bytes: " + storageMetadata.getSizeBytes());
+                                        // Metadata now contains the metadata for 'images/forest.jpg'
+                                        //TODO store MD5 Hash for comparison
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        System.out.println("Some sort of error happened >:( ");
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Uh-oh, an error occurred!
+                        }
+                    });
         }
-
-        StorageReference listRef = storage.getReference().child("images");
-
-        listRef.listAll()
-                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                    @Override
-                    public void onSuccess(ListResult listResult) {
-                        for (StorageReference prefix : listResult.getPrefixes()) {
-                            // All the prefixes under listRef.
-                            // You may call listAll() recursively on them.
-                            System.out.print("HERE are our Prefixes: " + listResult.toString() + "\n");
-                            listRef.listAll();
-                        }
-
-                        for (StorageReference item : listResult.getItems()) {
-                            // All the items under listRef.
-                            System.out.print("HERE are our Items: " + listResult.getItems().toString()+ "\n");
-                            listRef.listAll();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Uh-oh, an error occurred!
-                    }
-                });
     }
-
 
     public void buttonClicked(View view) {
         if (view.getId() == R.id.logout) {
@@ -281,6 +297,11 @@ public class UploadImg extends AppCompatActivity {
             startActivity(intent);
             this.finish();
         }
+    }
+    public String stringGrab(String Origin)
+    {
+       return Origin.substring(35);
+
     }
 
 // go back
