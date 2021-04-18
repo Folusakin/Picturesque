@@ -2,9 +2,11 @@
 package com.example.picturesque;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,7 +37,7 @@ public class ChooseImg extends AppCompatActivity {
 
     FirebaseStorage storage;
     StorageReference storageReference;
-
+    private final int PICK_IMAGE_REQUEST = 22;
     InputImage image;
     ImageView imageView;
     Button button;
@@ -84,17 +86,49 @@ public class ChooseImg extends AppCompatActivity {
             this.finish();
         }
     }
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
     private void openGallery() {
-        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, PICK_IMAGE);
+        //Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        //startActivityForResult(gallery, PICK_IMAGE);
+        Intent gallery = new Intent();
+        gallery.setType("image/*");
+        gallery.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(
+                Intent.createChooser(
+                        gallery,
+                        "Select Image from here..."),
+                PICK_IMAGE_REQUEST);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_REQUEST) {
             imageUri = data.getData();
+            System.out.println("URI City: "+imageUri.toString());
             imageView.setImageURI(imageUri);
         }
+        String imageName = getFileName(imageUri);
+        System.out.println("Voici le nom d'image: "+imageName);
 
         try {
 
