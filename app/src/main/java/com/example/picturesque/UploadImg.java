@@ -39,7 +39,7 @@ import java.util.UUID;
 public class UploadImg extends AppCompatActivity {
 
     // views for button
-    private Button btnSelect, btnUpload, btnBack;
+    private Button btnSelect, btnUpload, btnBack, btnFindDupes;
 
     // view for image view
     private ImageView imageView;
@@ -64,6 +64,7 @@ public class UploadImg extends AppCompatActivity {
         btnUpload = findViewById(R.id.btnUpload);
         imageView = findViewById(R.id.imageView);
         btnBack = findViewById(R.id.btnBack);
+        btnFindDupes = findViewById(R.id.btnFindDupes);
 
         // get the Firebase  storage reference
         storage = FirebaseStorage.getInstance();
@@ -84,7 +85,20 @@ public class UploadImg extends AppCompatActivity {
                 uploadImage();
             }
         });
+
+        // on pressing btnFindDupes getDuplicate() is called
+        btnFindDupes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDuplicates();
+            }
+        });
+
     }
+
+
+
+
 
     // Select Image method
     private void SelectImage() {
@@ -120,9 +134,10 @@ public class UploadImg extends AppCompatActivity {
                 && data != null
                 && data.getData() != null) {
 
+    // this gets the MD5 hash of the image that the user chose
             // Get the Uri of data
             filePath = data.getData();
-            String filepathstring = filePath.toString();
+            //String filepathstring = filePath.toString();
             String user_upload_hash = getMD5(filePath);
 
             System.out.println("This is the user upload hash: " + user_upload_hash);
@@ -144,6 +159,91 @@ public class UploadImg extends AppCompatActivity {
 
     }
 
+    private void getDuplicates(){
+        if (filePath != null) {
+            // get the md5 hash of the user uploaded image
+            String user_upload_hash = getMD5(filePath).trim();
+            String short_upload_hash = removeLastCharacter(user_upload_hash);
+
+
+
+
+
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            //for parents within root
+            //StorageReference testRef = storage.getReference().child("picturesque-again.appspot.com");
+           // System.out.println("This is the list i guess: " + testRef.toString());
+            StorageReference listRef = storage.getReference().child("images");
+
+            listRef.listAll()
+                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            System.out.println("HERE are our Items: ");
+                            for (StorageReference item : listResult.getItems()) {
+
+                                // All the items under listRef
+                                String refNumber = item.toString();
+                                StorageReference storageRef = storage.getReference();
+                                String sub = stringGrab(refNumber);
+
+                                // Get reference to the file
+                                StorageReference forestRef = storageRef.child(sub);
+                                forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                    @Override
+                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                       // System.out.println("THIS IS THE SUBSTRING " + sub);
+                                        //System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash());
+
+
+                                       String firebase_md5 = storageMetadata.getMd5Hash().trim();
+                                       String short_fb_hash = removeLastCharacter(firebase_md5);
+                                       if(short_fb_hash.equals(short_upload_hash)){
+
+                                           System.out.println("We HAVE A MATCH");
+                                           System.out.println(firebase_md5);
+                                           System.out.println(user_upload_hash);
+                                           System.out.println(" ");
+
+                                       }
+                                       else{
+                                           System.out.println("This is not a match");
+                                           System.out.println(firebase_md5);
+                                           System.out.println(user_upload_hash);
+                                           System.out.println(" ");
+                                       }
+
+
+
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        System.out.println("Some sort of error happened >:( ");
+                                        // Uh-oh, an error occurred!
+                                    }
+                                });
+
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Uh-oh, an error occurred!
+                        }
+                    });
+
+        }
+        else{
+            System.out.println("There was an error, no filepath");
+        }
+
+
+    }
+
     private String getMD5(Uri filePath) {
         String base64Digest = "";
         try {
@@ -162,15 +262,14 @@ public class UploadImg extends AppCompatActivity {
             byte[] md5Bytes = md5Hash.digest();
             base64Digest = Base64.encodeToString(md5Bytes, Base64.DEFAULT);
 
-       /*for (byte md5Byte : md5Bytes) {
-            returnVal += Integer.toString((md5Byte & 0xff) + 0x100, 16).substring(1);
-        }*/
         } catch (Throwable t) {
             t.printStackTrace();
         }
         return base64Digest;
 
     }
+
+
 
     // UploadImage method
     private void uploadImage() {
@@ -253,57 +352,6 @@ public class UploadImg extends AppCompatActivity {
                                 }
                             });
 
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-            //for parents within root
-            StorageReference testRef = storage.getReference().child("picturesque-again.appspot.com");
-            System.out.println("This is the list i guess: " + testRef.toString());
-            StorageReference listRef = storage.getReference().child("images");
-
-            listRef.listAll()
-                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            System.out.println("HERE are our Items: ");
-                            for (StorageReference item : listResult.getItems()) {
-
-                                // All the items under listRef
-                                String refNumber = item.toString();
-                                StorageReference storageRef = storage.getReference();
-                                String sub = stringGrab(refNumber);
-
-                                // Get reference to the file
-                                StorageReference forestRef = storageRef.child(sub);
-                                forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                                    @Override
-                                    public void onSuccess(StorageMetadata storageMetadata) {
-                                        System.out.println("THIS IS THE SUBSTRING " + sub);
-                                        System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash());
-                                        System.out.println("This is the size in bytes: " + storageMetadata.getSizeBytes());
-                                        System.out.println(" ");
-                                        // Metadata now contains the metadata for 'images/forest.jpg'
-                                        //TODO store MD5 Hash for comparison
-                                        // decode the firebase md5 hashes
-
-                                        // String decoded_hash = Base64.decode(storageMetadata.getMd5Hash()).toString();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        System.out.println("Some sort of error happened >:( ");
-                                        // Uh-oh, an error occurred!
-                                    }
-                                });
-
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Uh-oh, an error occurred!
-                        }
-                    });
         }
     }
 
@@ -317,6 +365,18 @@ public class UploadImg extends AppCompatActivity {
     }
 
     public String stringGrab(String Origin) {
+        return Origin.substring(35);
+
+    }
+    public static String removeLastCharacter(String str) {
+        String result = null;
+        if ((str != null) && (str.length() > 0)) {
+            result = str.substring(0, str.length() - 2);
+        }
+        return result;
+    }
+
+    public String stringGrabshort(String Origin) {
         return Origin.substring(35);
 
     }
@@ -353,106 +413,6 @@ public class UploadImg extends AppCompatActivity {
         return result;
     }
 
-    // Implementing sneaky upload
- /*   public void uploadTemp(Uri filePath) {
-
-        if (filePath != null) {
-            String imageName = getFileName(filePath);
-            // Code for showing progressDialog while uploading
-            ProgressDialog progressDialog
-                    = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            // Defining the child of storageReference
-            StorageReference ref
-                    = storageReference
-                    .child(
-                            "images/"
-                                    + imageName);
-
-            System.out.println("This is our IMAGE NAME DUDE: " + imageName);
-
-            // if upload successfull we need to get the upload files medata md5 hash
-            //then we delete the file
-            // or ask the user if they want to upload or not
-            // no == delete the file
-            // yes == its already there!
-
-            ref.putFile(filePath)
-                    .addOnSuccessListener(
-                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-                                @Override
-                                public void onSuccess(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-
-                                    // Image uploaded successfully
-                                    // Dismiss dialog
-                                    progressDialog.dismiss();
-                                    Toast
-                                            .makeText(UploadImg.this,
-                                                    "Image Uploaded!!",
-                                                    Toast.LENGTH_SHORT)
-                                            .show();
-                                }
-
-
-                            }
-
-
-                    )
-// This is not the On failure listener we want to get rid of
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            // Error, Image not uploaded
-                            progressDialog.dismiss();
-                            Toast
-                                    .makeText(UploadImg.this,
-                                            "Failed " + e.getMessage(),
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    })
-                    .addOnProgressListener(
-                            new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                                // Progress Listener for loading
-                                // percentage on the dialog box
-                                @Override
-                                public void onProgress(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-                                    double progress
-                                            = (100.0
-                                            * taskSnapshot.getBytesTransferred()
-                                            / taskSnapshot.getTotalByteCount());
-                                    progressDialog.setMessage(
-                                            "Uploaded "
-                                                    + (int) progress + "%");
-                                }
-                            });
-
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-
-            StorageReference listRef = storage.getReference().child(imageName);
-           // String imageMeta = " ";
-            StorageReference forestRef = storageRef.child(imageName);
-              //  forestRef.getMetadata().getMd5Hash();
-
-
-            *//*.addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                @Override
-                public void onSuccess(StorageMetadata storageMetadata) {
-                    imageMeta = storageMetadata.getMd5Hash().toString();
-                    System.out.println("This is the MD5 Hash: " + imageMeta);
-
-*//*
-                }
-
-            };*/
         }
 
 

@@ -25,7 +25,7 @@
         android:id="@+id/logout"
         android:layout_width="107dp"
         android:layout_height="55dp"
-        android:layout_marginEnd="95dp"
+        android:layout_marginEnd="68dp"
         android:layout_marginBottom="148dp"
         android:onClick="buttonClicked"
         android:text="Log Out"
@@ -52,10 +52,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="69dp"
         android:layout_marginEnd="61dp"
-        android:text="Back"
         android:onClick="backClicked"
+        android:text="Back"
         app:layout_constraintBaseline_toBaselineOf="@+id/logout"
         app:layout_constraintEnd_toStartOf="@+id/logout"
+        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -68,4 +69,18 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/btnUpload"
         app:layout_constraintEnd_toStartOf="@+id/btnUpload"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnFindDupes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="123dp"
+        android:layout_marginBottom="24dp"
+        android:text="Find duplicates"
+        app:layout_constraintBottom_toTopOf="@+id/logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpload" />
 </androidx.constraintlayout.widget.ConstraintLayout>
