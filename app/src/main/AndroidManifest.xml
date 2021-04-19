@@ -10,6 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Picturesque.NoActionBar">
+        <activity android:name=".Menu" />
         <activity android:name=".ChooseImg" />
         <activity android:name=".UploadImg" />
         <activity
@@ -23,6 +24,10 @@
             </intent-filter>
 
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
     </application>
 
