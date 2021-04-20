@@ -24,21 +24,22 @@
     <Button
         android:id="@+id/buttonLoadPicture"
         android:layout_width="123dp"
-        android:layout_height="58dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="399dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="144dp"
 
+        android:layout_marginBottom="116dp"
         android:background="#EAD7D7"
         android:shadowColor="#00BCD4"
         android:text="Load Picture"
         android:textColor="#CDDC39"
         android:textColorHighlight="#2196F3"
         android:textColorHint="#8BC34A"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/mltagging"
         app:layout_constraintEnd_toStartOf="@+id/logout"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.515"
         app:rippleColor="#FFC107" />
 
@@ -85,7 +86,24 @@
         android:text="Upload Image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoadPicture" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoadPicture"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/mltagging"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="38dp"
+        android:text="ML Tagging"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageupload"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imageupload"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoadPicture"
+        app:layout_constraintVertical_bias="0.983" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

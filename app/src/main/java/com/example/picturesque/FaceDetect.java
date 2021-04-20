@@ -1,3 +1,4 @@
+//TODO get a list of all images in FB
 
 
 package com.example.picturesque;
@@ -49,30 +50,27 @@ import java.io.IOException;
     public class FaceDetect extends  AppCompatActivity {
 
         InputImage image;
-        InputImage image2;
-
 
         ImageView imageView;
 
         Context context;
-        Button button;
-        ImageView imageView2;
+        Button button, btnBack;
+
         Button button2;
 
         private static final int PICK_IMAGE = 100;
-        private static final int PICK_IMAGE_2 = 2;
-
         Uri imageUri;
-        Uri imageUri2;
+
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.img_comparison);
             imageView = (ImageView)findViewById(R.id.imageView);
             button = (Button)findViewById(R.id.buttonLoadPicture);
-            imageView2 = (ImageView)findViewById(R.id.imageView2);
-            button2 = (Button)findViewById(R.id.button);
+
+            //button2 = (Button)findViewById(R.id.button);
+            btnBack = (Button)findViewById(R.id.btnBack);
 
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -83,12 +81,12 @@ import java.io.IOException;
 
                 }
             });
-            button2.setOnClickListener(new View.OnClickListener() {
+
+            btnBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent gallery2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                    startActivityForResult(gallery2, PICK_IMAGE_2);
-
+                    Intent intent = new Intent(getApplicationContext(), Menu.class);
+                    startActivity(intent);
                 }
             });
         }
@@ -96,77 +94,30 @@ import java.io.IOException;
             Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
             startActivityForResult(gallery, PICK_IMAGE);
         }
-        private void openGallery2() {
-            Intent gallery2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-            startActivityForResult(gallery2, PICK_IMAGE_2);
-        }
+
         @Override
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
-                imageUri = data.getData();
-                System.out.println("THIS IS THE URI"+imageUri);
-                imageView.setImageURI(imageUri);
-                context = getApplicationContext();
+            if(resultCode != RESULT_CANCELED) {
+                if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
+                    imageUri = data.getData();
+                    System.out.println("THIS IS THE URI" + imageUri);
+                    imageView.setImageURI(imageUri);
+                    context = getApplicationContext();
 
-                System.out.println("THIS IS THE URI:   "+imageUri);
-                try {
-                    image = InputImage.fromFilePath(context, imageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("the image: "+image);
+                    System.out.println("THIS IS THE URI:   " + imageUri);
+                    try {
+                        image = InputImage.fromFilePath(context, imageUri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("the image: " + image);
 
-            }
-            else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_2 && image2 == null) {
-                imageUri2 = data.getData();
-                imageView2.setImageURI(imageUri2);
-                context = getApplicationContext();
-
-                try {
-                    image2 = InputImage.fromFilePath(context, imageUri2);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
-                System.out.println("the image: "+image2);
             }
 
 
-
-            byte[] image1 = new byte[0];
-            byte[] image_2 = new byte[0];
-            try {
-                image1 = convertImageToByte(imageUri);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            if(image2 != null) {
-                try {
-                    image_2 = convertImageToByte(imageUri2);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            if(image2 != null) {
-                for(int i=0; i< image1.length ; i++) {
-                    System.out.print(image1[i] +" ");
-                }
-                System.out.println(" ");
-                for(int i=0; i< image_2.length; i++) {
-                    System.out.print(image_2[i] +" ");
-                }
-                boolean retval = Arrays.equals(image1, image_2);
-                if (retval == true)
-                    similarityAssessment("These are the same image");
-                else if (retval == false)
-                    similarityAssessment("These are not the same image");
-                System.out.println(" ");
-                System.out.println("Uri for the first image: "+imageUri);
-                System.out.println("Uri for the second image: "+imageUri2);
-            }
 
             // [END image_from_path
             labelImages(image); // Magic Here
@@ -175,26 +126,8 @@ import java.io.IOException;
 
 
         }
-        public byte[] convertImageToByte(Uri uri) throws NoSuchAlgorithmException {
-            byte[] data = new byte[0];
-            try {
-                ContentResolver cr = getBaseContext().getContentResolver();
-                InputStream inputStream = cr.openInputStream(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                ByteArrayOutputStream boos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, boos);
-                data = boos.toByteArray();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
 
-            digest.update(data);
-
-            byte[] hashedBytes = digest.digest();
-            return hashedBytes;
-        }
-
+// returns the labels
         public void similarityAssessment(String randomNumber) {
             TextView randomNumberTv = (TextView) findViewById(R.id.textView2);
             randomNumberTv.setText(randomNumber);

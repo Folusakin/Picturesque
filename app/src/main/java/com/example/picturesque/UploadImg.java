@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -29,18 +32,30 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.face.Face;
+import com.google.mlkit.vision.face.FaceDetection;
+import com.google.mlkit.vision.face.FaceDetector;
+import com.google.mlkit.vision.face.FaceDetectorOptions;
+import com.google.mlkit.vision.label.ImageLabel;
+import com.google.mlkit.vision.label.ImageLabeler;
+import com.google.mlkit.vision.label.ImageLabeling;
+import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UploadImg extends AppCompatActivity {
 
     // views for button
-    private Button btnSelect, btnUpload, btnBack, btnFindDupes;
-
+    private Button btnSelect, btnUpload, btnBack, btnFindDupes, btnDelete;
+    InputImage image;
     // view for image view
     private ImageView imageView;
 
@@ -65,6 +80,7 @@ public class UploadImg extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         btnBack = findViewById(R.id.btnBack);
         btnFindDupes = findViewById(R.id.btnFindDupes);
+       // btnDelete = findViewById(R.id.btnDelete);
 
         // get the Firebase  storage reference
         storage = FirebaseStorage.getInstance();
@@ -94,8 +110,17 @@ public class UploadImg extends AppCompatActivity {
             }
         });
 
-    }
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Menu.class);
+                startActivity(intent);
 
+            }
+        });
+
+
+    }
 
 
 
@@ -124,38 +149,46 @@ public class UploadImg extends AppCompatActivity {
         super.onActivityResult(requestCode,
                 resultCode,
                 data);
+if(resultCode != RESULT_CANCELED) {
+    // checking request code and result code
+    // if request code is PICK_IMAGE_REQUEST and
+    // resultCode is RESULT_OK
+    // then set image in the image view
+    if (requestCode == PICK_IMAGE_REQUEST
+            && resultCode == RESULT_OK
+            && data != null
+            && data.getData() != null) {
 
-        // checking request code and result code
-        // if request code is PICK_IMAGE_REQUEST and
-        // resultCode is RESULT_OK
-        // then set image in the image view
-        if (requestCode == PICK_IMAGE_REQUEST
-                && resultCode == RESULT_OK
-                && data != null
-                && data.getData() != null) {
+        // this gets the MD5 hash of the image that the user chose
+        // Get the Uri of data
+        filePath = data.getData();
 
-    // this gets the MD5 hash of the image that the user chose
-            // Get the Uri of data
-            filePath = data.getData();
-            //String filepathstring = filePath.toString();
-            String user_upload_hash = getMD5(filePath);
-
-            System.out.println("This is the user upload hash: " + user_upload_hash);
-            try {
-
-                // Setting image on image view using Bitmap
-                Bitmap bitmap = MediaStore
-                        .Images
-                        .Media
-                        .getBitmap(
-                                getContentResolver(),
-                                filePath);
-                imageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                // Log the exception
-                e.printStackTrace();
-            }
+        String user_upload_hash = getMD5(filePath);
+        try {
+            image = InputImage.fromFilePath(getApplicationContext(), filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        labelImages(image); // Magic Here
+        configureAndRunImageLabeler(image, filePath);
+        detectFaces(image);
+        System.out.println("This is the user upload hash: " + user_upload_hash);
+        try {
+
+            // Setting image on image view using Bitmap
+            Bitmap bitmap = MediaStore
+                    .Images
+                    .Media
+                    .getBitmap(
+                            getContentResolver(),
+                            filePath);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            // Log the exception
+            e.printStackTrace();
+        }
+    }
+}
 
     }
 
@@ -187,8 +220,17 @@ public class UploadImg extends AppCompatActivity {
                                 String refNumber = item.toString();
                                 StorageReference storageRef = storage.getReference();
                                 String sub = stringGrab(refNumber);
+                                String[] substringref = {sub.toString()};
 
-                                // Get reference to the file
+                                for(int i = 0; i<substringref.length;i++) {
+
+                                    System.out.println("Substrings of files");
+                                    System.out.println(substringref[i]);
+                                    System.out.println(" ");
+
+                                }
+
+                                    // Get reference to the file
                                 StorageReference forestRef = storageRef.child(sub);
                                 forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                     @Override
@@ -202,15 +244,17 @@ public class UploadImg extends AppCompatActivity {
                                        if(short_fb_hash.equals(short_upload_hash)){
 
                                            System.out.println("We HAVE A MATCH");
-                                           System.out.println(firebase_md5);
-                                           System.out.println(user_upload_hash);
+                                           System.out.println(sub + "'s hash: " + firebase_md5);
+                                           System.out.println("User Hash: " + user_upload_hash);
                                            System.out.println(" ");
+
+                                           //TODO we need a way to reference the
 
                                        }
                                        else{
                                            System.out.println("This is not a match");
-                                           System.out.println(firebase_md5);
-                                           System.out.println(user_upload_hash);
+                                           System.out.println(sub + "'s hash: " + firebase_md5);
+                                           System.out.println("User Hash: " + user_upload_hash);
                                            System.out.println(" ");
                                        }
 
@@ -282,11 +326,18 @@ public class UploadImg extends AppCompatActivity {
             progressDialog.show();
 
             // Defining the child of storageReference
+            /*StorageReference ref
+                    = storageReference
+                    .child(
+                            "images/"
+                                    + imageName);*/
+// I changed this because if we keep the same file name firebase wont count the upload
+            // Firebase auto-protects against duplicate uploads
             StorageReference ref
                     = storageReference
                     .child(
                             "images/"
-                                    + imageName);
+                                    + UUID.randomUUID().toString());
 
             System.out.println("This is our IMAGE NAME DUDE: " + imageName);
 
@@ -376,20 +427,7 @@ public class UploadImg extends AppCompatActivity {
         return result;
     }
 
-    public String stringGrabshort(String Origin) {
-        return Origin.substring(35);
 
-    }
-
-    // go back
-    public void backClicked(View view) {
-        if (view.getId() == R.id.btnBack) {
-            Intent intent = new Intent(getApplicationContext(), ChooseImg.class);
-            startActivity(intent);
-        }
-    }
-
-    ;
 
     public String getFileName(Uri uri) {
         String result = null;
@@ -413,6 +451,147 @@ public class UploadImg extends AppCompatActivity {
         return result;
     }
 
-        }
+    public void detectFaces(InputImage image){
+
+        FaceDetectorOptions options =
+                new FaceDetectorOptions.Builder()
+                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                        .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+                        .setMinFaceSize(0.1f)
+                        .enableTracking()
+                        .build();
+        // [END set_detector_options]
+
+        // [START get_detector]
+
+        FaceDetector detector = FaceDetection.getClient(options);
+        Task<List<Face>> result =
+                detector.process(image)
+                        .addOnSuccessListener(
+                                new OnSuccessListener<List<Face>>() {
+                                    @Override
+                                    public void onSuccess(List<Face> faces) {
+                                        // Task completed successfully
+                                        // [START_EXCLUDE]
+                                        // [START get_face_info]
+                                        int i = 0;
+                                        for (Face face : faces) {
+                                            Rect bounds = face.getBoundingBox();
+                                            i++;
+
+                                        }
+                                        if(i>0)
+                                            faceCount("There is/are "+ i + " person(s) in this picture");
+                                        else
+                                            faceCount("There are no faces in this picture");
+                                        // [END get_face_info]
+                                        // [END_EXCLUDE]
+                                    }
+                                })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Task failed with an exception
+                                        // ...
+                                    }
+                                });
+        // [END run_detector]
+    }
+    public void labelImages(InputImage image) {
+        ImageLabelerOptions options =
+                new ImageLabelerOptions.Builder()
+                        .setConfidenceThreshold(0.8f)
+                        .build();
+
+        // [START get_detector_options]
+        ImageLabeler labeler = ImageLabeling.getClient(options);
+        // [END get_detector_options]
+
+        // [START run_detector]
+        Task<List<ImageLabel>> result =
+                labeler.process(image)
+                        .addOnSuccessListener(
+                                new OnSuccessListener<List<ImageLabel>>() {
+                                    @Override
+                                    public void onSuccess(List<ImageLabel> labels) {
+                                        // Task completed successfully
+                                        // [START_EXCLUDE]
+                                        // [START get_labels]
+                                        for (ImageLabel label : labels) {
+                                            String text = label.getText();
+                                            float confidence = label.getConfidence();
+                                        }
+                                        // [END get_labels]
+                                        // [END_EXCLUDE]
+                                    }
+                                })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Task failed with an exception
+                                        // ...
+                                    }
+                                });
+        // [END run_detector]
+    }
+    public void similarityAssessment(String randomNumber) {
+        TextView randomNumberTv = (TextView) findViewById(R.id.textView2);
+        randomNumberTv.setText(randomNumber);
+    }
+    public void faceCount(String Face){
+        System.out.println(Face);
+        TextView faceTv = (TextView) findViewById(R.id.textView);
+        faceTv.setText(Face.toString());
+
+
+    }
+    public void configureAndRunImageLabeler(InputImage image, Uri Uri) {
+        ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+        labeler.process(image)
+                .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                    @Override
+                    public void onSuccess(List<ImageLabel> labels) {
+                        // Task completed successfully
+                        // ...
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Task failed with an exception
+                        // ...
+                    }
+                });
+
+        labeler.process(image)
+                .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                    @Override
+                    public void onSuccess(List<ImageLabel> labels) {
+                        // [START get_image_label_info]
+                        List<String> label2 = new ArrayList<String>();
+                        for (ImageLabel label : labels) {
+
+                            String text = label.getText();
+                            float confidence = label.getConfidence();
+                            int index = label.getIndex();
+
+                            label2.add(text);
+
+
+                        }
+                        similarityAssessment(label2.get(1));
+
+
+
+                    }
+                });
+
+
+    }
+}
+//}
 
 

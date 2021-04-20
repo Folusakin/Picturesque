@@ -42,6 +42,7 @@ public class ChooseImg extends AppCompatActivity {
     ImageView imageView;
     Button button;
     Button image_upload;
+    Button mltagging;
     private static final int PICK_IMAGE = 100;
     Uri imageUri;
     @Override
@@ -52,6 +53,7 @@ public class ChooseImg extends AppCompatActivity {
         imageView = (ImageView)findViewById(R.id.imageView);
         button = (Button)findViewById(R.id.buttonLoadPicture);
         image_upload = (Button)findViewById(R.id.imageupload);
+        mltagging = (Button)findViewById(R.id.mltagging);
 
 
         // get the Firebase  storage reference
@@ -73,6 +75,15 @@ public class ChooseImg extends AppCompatActivity {
                 //upload_image();
                 Intent intent = new Intent(getApplicationContext(), UploadImg.class);
                 startActivity(intent);
+            }
+        });
+
+        mltagging.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FaceDetect.class);
+                startActivity(intent);
+
             }
         });
     }
