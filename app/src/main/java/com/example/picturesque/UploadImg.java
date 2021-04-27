@@ -103,12 +103,12 @@ public class UploadImg extends AppCompatActivity {
         });
 
         // on pressing btnFindDupes getDuplicate() is called
-        btnFindDupes.setOnClickListener(new View.OnClickListener() {
+      /*  btnFindDupes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDuplicates();
             }
-        });
+        });*/
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +172,7 @@ if(resultCode != RESULT_CANCELED) {
         labelImages(image); // Magic Here
         configureAndRunImageLabeler(image, filePath);
         detectFaces(image);
+
         System.out.println("This is the user upload hash: " + user_upload_hash);
         try {
 
@@ -192,7 +193,7 @@ if(resultCode != RESULT_CANCELED) {
 
     }
 
-    private void getDuplicates(){
+   /* private void getDuplicates(){
         if (filePath != null) {
             // get the md5 hash of the user uploaded image
             String user_upload_hash = getMD5(filePath).trim();
@@ -286,7 +287,7 @@ if(resultCode != RESULT_CANCELED) {
         }
 
 
-    }
+    }*/
 
     private String getMD5(Uri filePath) {
         String base64Digest = "";
@@ -342,13 +343,14 @@ if(resultCode != RESULT_CANCELED) {
             System.out.println("This is our IMAGE NAME DUDE: " + imageName);
 
 
-            // if upload successfull we need to get the upload files medata md5 hash
-            //then we delete the file
-            // or ask the user if they want to upload or not
-            // no == delete the file
-            // yes == its already there!
 
-            ref.putFile(filePath)
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setCustomMetadata("Face Count", "Number")
+                    .setCustomMetadata("Contents", "ML Tags")
+                    .build();
+
+
+            ref.putFile(filePath,metadata)
                     .addOnSuccessListener(
                             new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
@@ -499,6 +501,7 @@ if(resultCode != RESULT_CANCELED) {
                                 });
         // [END run_detector]
     }
+
     public void labelImages(InputImage image) {
         ImageLabelerOptions options =
                 new ImageLabelerOptions.Builder()
@@ -525,6 +528,7 @@ if(resultCode != RESULT_CANCELED) {
                                         }
                                         // [END get_labels]
                                         // [END_EXCLUDE]
+
                                     }
                                 })
                         .addOnFailureListener(
@@ -545,7 +549,6 @@ if(resultCode != RESULT_CANCELED) {
         System.out.println(Face);
         TextView faceTv = (TextView) findViewById(R.id.textView);
         faceTv.setText(Face.toString());
-
 
     }
     public void configureAndRunImageLabeler(InputImage image, Uri Uri) {

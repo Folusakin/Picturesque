@@ -1,13 +1,17 @@
 package com.example.picturesque;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,9 +28,12 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.mlkit.vision.common.InputImage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class DuplicateFind extends AppCompatActivity {
 
@@ -40,6 +47,8 @@ public class DuplicateFind extends AppCompatActivity {
     Integer duplicate_count = 0;
     // Uri indicates, where the image will be picked from
     private Uri filePath;
+    public String[] duplicate_substrings;
+    public String[] substringref;
 
     // request code
     private final int PICK_IMAGE_REQUEST = 22;
@@ -59,7 +68,8 @@ public class DuplicateFind extends AppCompatActivity {
         imageView2 = findViewById(R.id.imageView2);
         btnBack = findViewById(R.id.btnBack);
         btnFindDupes = findViewById(R.id.btnFindDupes);
-        // btnDelete = findViewById(R.id.btnDelete);
+        btnPhoneDelete = findViewById(R.id.btnPhoneDelete);
+        btnCloudDelete = findViewById(R.id.btnCloudDelete);
 
         // get the Firebase  storage reference
         storage = FirebaseStorage.getInstance();
@@ -79,7 +89,11 @@ public class DuplicateFind extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 duplicate_count = 0;
-                getDuplicates();
+                try {
+                    getDuplicates();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -180,15 +194,13 @@ public class DuplicateFind extends AppCompatActivity {
 
 
     }
-    private void getDuplicates(){
+
+
+    private void getDuplicates() throws InterruptedException {
         if (filePath != null) {
             // get the md5 hash of the user uploaded image
             String user_upload_hash = getMD5(filePath).trim();
             String short_upload_hash = removeLastCharacter(user_upload_hash);
-
-
-
-
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference storageRef = storage.getReference();
@@ -199,60 +211,129 @@ public class DuplicateFind extends AppCompatActivity {
                         @Override
                         public void onSuccess(ListResult listResult) {
                             System.out.println("HERE are our Items: ");
+                            //ArrayList<String> substringref = new ArrayList<String>();
                             for (StorageReference item : listResult.getItems()) {
 
                                 // All the items under listRef
                                 String refNumber = item.toString();
                                 StorageReference storageRef = storage.getReference();
                                 String sub = stringGrab(refNumber);
-                                String[] substringref = {sub.toString()};
+                                ///substringref.add(sub);// = {sub.toString().append()};
 
+                                String[] substringref = {sub};
+
+
+                                //for(int i = 0; i<substringref.size();i++) {
                                 for(int i = 0; i<substringref.length;i++) {
 
                                     System.out.println("Substrings of files");
+                                   // System.out.println(substringref.get(i));
                                     System.out.println(substringref[i]);
                                     System.out.println(" ");
 
                                 }
-
+                               // System.out.println("LENGTH OF SUBSTRING "+substringref.size());
+                                System.out.println("LENGTH OF SUBSTRING "+substringref.length);
                                 // Get reference to the file
                                 StorageReference forestRef = storageRef.child(sub);
                                 forestRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                     @Override
                                     public void onSuccess(StorageMetadata storageMetadata) {
-                                        // System.out.println("THIS IS THE SUBSTRING " + sub);
-                                        //System.out.println("This is the MD5 Hash: " + storageMetadata.getMd5Hash());
 
-                                       // Integer duplicate_count = 0;
                                         String firebase_md5 = storageMetadata.getMd5Hash().trim();
                                         String[] fb_hash_array = {firebase_md5};
-                                        String short_fb_hash = removeLastCharacter(firebase_md5);
-                                        if(short_fb_hash.equals(short_upload_hash)){
+                                       /* ArrayList<String> fb_hash_array= new ArrayList<String>();
+                                        ArrayList<String> short_fb_hash = new ArrayList<String>();
+                                        ArrayList<String> duplicate_substrings = new ArrayList<String>();
+                                        fb_hash_array.add(firebase_md5);
+                                        short_fb_hash.add(removeLastCharacter(firebase_md5));*/
+                                        String[] short_fb_hash = {removeLastCharacter(firebase_md5)};
+                                       // for (int i = 0; i < substringref.size(); i++) {
+
+                                            for (int i = 0; i < substringref.length; i++) {
+                                        if (short_fb_hash[i].equals(short_upload_hash)) {
+
+                                            //if (fb_hash_array.get(i).equals(short_upload_hash)) {
+
+                                            //duplicate_substrings.set(i, substringref.get(i));
+                                            String[] duplicate_substrings = {sub};
+                                            duplicate_substrings[i] = sub;
 
                                             System.out.println("We HAVE A MATCH");
+                                            System.out.println("Duplicate Substring: " + duplicate_substrings[i]);
                                             System.out.println(sub + "'s hash: " + firebase_md5);
                                             System.out.println("User Hash: " + user_upload_hash);
                                             System.out.println(" ");
 
-                                            if(!short_fb_hash.equals(short_upload_hash)){
-                                                duplicate_count = 0;
-
-                                            }
-                                            else{
-                                                duplicate_count = duplicate_count +1;
-                                            }
+                                            duplicate_count = duplicate_count + 1;
+                                            //TODO store duplicate substrings
 
 
-                                           // dupeCount(short_upload_hash,fb_hash_array);
+                                            btnPhoneDelete.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    System.out.println("Phone DELETE BUTTON");
+                                                    //ContentResolver test = getContentResolver();
+                                                    // String  fileName = getFileName(filePath);
+                                                    //filePath = Uri.parse(getIntent().getStringExtra(fileName));
+
+                                                    // Get a filepath from a URI
+                                                    String uriFilepath = getFilePath(filePath);
+
+                                                    File fdelete = new File(uriFilepath);
+
+                                                    if (fdelete.exists()) {
+                                                        if (fdelete.delete()) {
+                                                            System.out.println("file Deleted :");
+                                                        } else {
+                                                            System.out.println("file not Deleted :");
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                            btnCloudDelete.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    System.out.println("Cloud DELETE BUTTON");
+                                                    StorageReference storageRef = storage.getReference();
+
+                                                   // for (int i = 0; i < duplicate_substrings.size(); i++) {
+                                                    for (String duplicate_substring : duplicate_substrings) {
+                                                        // Create a reference to the file to delete
+                                                        // StorageReference desertRef = storageRef.child(duplicate_substrings.get(i));
+                                                        StorageReference dupeRef = storageRef.child(duplicate_substring);
+
+                                                        // Delete the file
+                                                        dupeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                // File deleted successfully
+                                                                System.out.println("Successful delete");
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception exception) {
+                                                                // Uh-oh, an error occurred!
+                                                                System.out.println("NOH an error happen :(");
+                                                            }
+                                                        });
+                                                    }
+
+
+                                                }
+                                            });
 
 
                                         }
-                                        else{
+                                            else{
                                             System.out.println("This is not a match");
                                             System.out.println(sub + "'s hash: " + firebase_md5);
                                             System.out.println("User Hash: " + user_upload_hash);
                                             System.out.println(" ");
                                         }
+                                    }
+
 
                                         System.out.println("DUPE COUNT: " + duplicate_count);
                                         String dupeString = duplicate_count.toString();
@@ -328,6 +409,44 @@ public class DuplicateFind extends AppCompatActivity {
         }
         return result;
     }
+
+
+    //getting real path from uri
+    private String getFilePath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(projection[0]);
+            String filePath = cursor.getString(columnIndex); // returns null
+            cursor.close();
+            return filePath;
+        }
+        return null;
+    }
+
+
+
+
+   /* public static void deleteFileFromMediaStore(final ContentResolver contentResolver, final File file) {
+        String canonicalPath;
+        try {
+            canonicalPath = file.getCanonicalPath();
+        } catch (IOException e) {
+            canonicalPath = file.getAbsolutePath();
+        }
+        final Uri uri = MediaStore.Files.getContentUri("external");
+        final int result = contentResolver.delete(uri,
+                MediaStore.Files.FileColumns.DATA + "=?", new String[]{canonicalPath});
+        if (result == 0) {
+            final String absolutePath = file.getAbsolutePath();
+            if (!absolutePath.equals(canonicalPath)) {
+                contentResolver.delete(uri,
+                        MediaStore.Files.FileColumns.DATA + "=?", new String[]{absolutePath});
+            }
+        }
+    }*/
 
    /* public Integer dupeCount(String user_hash, String[] firebase_hashes){
         Integer duplicate_count = 0;
