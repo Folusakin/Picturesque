@@ -75,6 +75,7 @@ public class DuplicateFind extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
+
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,7 +204,7 @@ public class DuplicateFind extends AppCompatActivity {
             String short_upload_hash = removeLastCharacter(user_upload_hash);
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
+            //StorageReference storageRef = storage.getReference();
             StorageReference listRef = storage.getReference().child("images");
 
             listRef.listAll()
