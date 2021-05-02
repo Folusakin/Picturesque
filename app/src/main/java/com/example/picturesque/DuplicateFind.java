@@ -1,12 +1,18 @@
 package com.example.picturesque;
 
+import android.app.RecoverableSecurityException;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -16,9 +22,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.mlkit.vision.common.InputImage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -46,12 +55,13 @@ public class DuplicateFind extends AppCompatActivity {
     private String[] fb_hash_array={};
     Integer duplicate_count = 0;
     // Uri indicates, where the image will be picked from
-    private Uri filePath;
+    public Uri filePath;
     public String[] duplicate_substrings;
     public String[] substringref;
 
     // request code
     private final int PICK_IMAGE_REQUEST = 22;
+    private final int YOUR_REQUEST_CODE = 88;
 
     // instance for firebase storage and StorageReference
     FirebaseStorage storage;
@@ -274,14 +284,56 @@ public class DuplicateFind extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(View v) {
                                                     System.out.println("Phone DELETE BUTTON");
+                                                    Intent intent = getIntent();
+
+                                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                                     //ContentResolver test = getContentResolver();
                                                     // String  fileName = getFileName(filePath);
                                                     //filePath = Uri.parse(getIntent().getStringExtra(fileName));
+                                                    Context context = getApplicationContext();
 
                                                     // Get a filepath from a URI
                                                     String uriFilepath = getFilePath(filePath);
+                                                    File file = new File(filePath.getPath());
 
-                                                    File fdelete = new File(uriFilepath);
+                                                    file.delete();
+                                                    if(file.exists()){
+                                                        try {
+                                                            file.getCanonicalFile().delete();
+
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                        if(file.exists()){
+                                                            getApplicationContext().deleteFile(file.getName());
+                                                        }
+                                                    }
+
+
+
+
+
+
+                                                   // deleteImage(file);
+/*
+
+                                                    try {
+                                                        delete(context, filePath);
+                                                    } catch (IntentSender.SendIntentException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    // DocumentFile.fromSingleUri(context, filePath).delete();
+
+                                                    System.out.println("Filepath?!?!" + file.toString());
+                                                    if(file.delete()){System.out.println(" File Deleted ");}
+                                                    else{System.out.println("Something else happened :( ");}
+*/
+
+
+                                                  //  context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(filePath.getPath()))));
+
+                                               /*     File fdelete = new File(uriFilepath);
 
                                                     if (fdelete.exists()) {
                                                         if (fdelete.delete()) {
@@ -289,7 +341,7 @@ public class DuplicateFind extends AppCompatActivity {
                                                         } else {
                                                             System.out.println("file not Deleted :");
                                                         }
-                                                    }
+                                                    }*/
                                                 }
                                             });
 
@@ -411,7 +463,15 @@ public class DuplicateFind extends AppCompatActivity {
         return result;
     }
 
-
+    /*public static boolean delete(Context context, Uri self) {
+        try {
+            return DocumentsContract.deleteDocument(context.getContentResolver(), self);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+*/
     //getting real path from uri
     private String getFilePath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -426,9 +486,49 @@ public class DuplicateFind extends AppCompatActivity {
         }
         return null;
     }
+    public void delete(final Context context, final Uri uri) throws IntentSender.SendIntentException {
+        try {
+            context.getContentResolver().delete(uri, null, null);
+        } catch (SecurityException exception) {
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 
+                if (exception instanceof RecoverableSecurityException) {
+                    final IntentSender intent = ((RecoverableSecurityException)exception).getUserAction()
+                            .getActionIntent()
+                            .getIntentSender();
 
+                    startIntentSenderForResult(intent, YOUR_REQUEST_CODE, null, 0, 0, 0, null);
+                    return;
+                }
+            }
+
+            throw exception;
+        }
+    }
+
+    /*private void deleteImage(File file) {
+        // Set up the projection (we only need the ID)
+        String[] projection = {MediaStore.Images.Media._ID};
+
+        // Match on the file path
+        String selection = MediaStore.Images.Media.DATA + " = ?";
+        String[] selectionArgs = new String[]{file.getAbsolutePath()};
+
+        // Query for the ID of the media matching the file path
+        Uri queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver contentResolver = getContentResolver();
+        Cursor c = contentResolver.query(queryUri, projection, selection, selectionArgs, null);
+        if (c.moveToFirst()) {
+            // We found the ID. Deleting the item via the content provider will also remove the file
+            long id = c.getLong(c.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+            Uri deleteUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            contentResolver.delete(deleteUri, null, null);
+        } else {
+            // File not found in media store DB
+        }
+        c.close();
+    }*/
 
    /* public static void deleteFileFromMediaStore(final ContentResolver contentResolver, final File file) {
         String canonicalPath;

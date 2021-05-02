@@ -68,7 +68,7 @@ public class Menu extends AppCompatActivity {
      viewcloudimgs.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View v) {
-             Intent intent = new Intent(getApplicationContext(),FirebaseImages.class);
+             Intent intent = new Intent(Menu.this,FirebaseImages.class);
              startActivity(intent);
          }
      });

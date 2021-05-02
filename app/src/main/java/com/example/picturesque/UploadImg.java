@@ -297,6 +297,7 @@ public class UploadImg extends AppCompatActivity {
     }*/
 
     private String getMD5(Uri filePath) {
+
         String base64Digest = "";
         try {
             InputStream inputStream = getContentResolver().openInputStream(filePath);

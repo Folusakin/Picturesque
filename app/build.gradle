@@ -15,7 +15,7 @@ packagingOptions {
     exclude 'META-INF/notice.txt'
     exclude 'META-INF/ASL2.0'
 }
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "30.0.3"
 
     defaultConfig {

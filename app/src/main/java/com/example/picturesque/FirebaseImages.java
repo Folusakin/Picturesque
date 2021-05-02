@@ -2,6 +2,8 @@ package com.example.picturesque;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
@@ -12,9 +14,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
-public class FirebaseImages extends AppCompatActivity {
+public class  FirebaseImages extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
     private ProgressBar mProgressCircle;
@@ -27,11 +30,13 @@ public class FirebaseImages extends AppCompatActivity {
         setContentView(R.layout.activity_images);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3,RecyclerView.VERTICAL,false));
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressCircle = findViewById(R.id.progress_circle);
         mUploads = new ArrayList<>();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -39,7 +44,7 @@ public class FirebaseImages extends AppCompatActivity {
                     Upload upload = postSnapshot.getValue(Upload.class);
                     mUploads.add(upload);
                 }
-                mAdapter = new ImageAdapter(FirebaseImages.this, mUploads);
+                mAdapter = new ImageAdapter(getApplicationContext(), mUploads);
                 mRecyclerView.setAdapter(mAdapter);
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
@@ -50,11 +55,11 @@ public class FirebaseImages extends AppCompatActivity {
             }
         });
     }
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         mDatabaseRef.removeEventListener(mDBListener);
-    }
+    }*/
 
 }
 
