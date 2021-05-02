@@ -23,24 +23,26 @@
 
     <Button
         android:id="@+id/logout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="33dp"
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="40dp"
         android:onClick="buttonClicked"
         android:text="Log Out"
         app:layout_constraintBottom_toBottomOf="@+id/btnBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnBack"
-        app:layout_constraintTop_toTopOf="@+id/btnBack" />
+        app:layout_constraintTop_toTopOf="@+id/btnBack"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnUpload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="33dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="250dp"
         android:onClick="uploadClicked"
-        android:text="Upload Image"
+        android:text="Upload "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -48,9 +50,9 @@
         android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="167dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="28dp"
         android:onClick="backClicked"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,8 +63,8 @@
         android:id="@+id/btnChoose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="26dp"
-        android:text="Choose Image"
+        android:layout_marginStart="20dp"
+        android:text="Choose"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnUpload"
         app:layout_constraintStart_toStartOf="parent" />
 

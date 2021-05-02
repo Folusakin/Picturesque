@@ -50,6 +50,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.CharBuffer;
+import java.nio.IntBuffer;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -350,9 +352,173 @@ public class UploadImg extends AppCompatActivity {
                                     + upload_image_name);
 
             System.out.println("This is our IMAGE NAME DUDE: " + imageName);
+            FaceDetectorOptions options =
+                    new FaceDetectorOptions.Builder()
+                            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+                            .setMinFaceSize(0.1f)
+                            .enableTracking()
+                            .build();
+            // [END set_detector_options]
+
+            // [START get_detector]
+
+            FaceDetector detector = FaceDetection.getClient(options);
+            Task<List<Face>> result =
+                    detector.process(image)
+                            .addOnSuccessListener(
+                                    new OnSuccessListener<List<Face>>() {
+                                        @Override
+                                        public void onSuccess(List<Face> faces) {
+                                            // Task completed successfully
+                                            // [START_EXCLUDE]
+                                            // [START get_face_info]
+                                            int i = 0;
+                                            for (Face face : faces) {
+                                                Rect bounds = face.getBoundingBox();
+                                                i++;
+
+                                            }
+                                            if (i > 0)
+                                                System.out.println("There is/are " + i + " person(s) in this picture");
+                                            else
+                                                System.out.println("There are no faces in this picture");
+                                            ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
+                                            labeler.process(image)
+                                                    .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                                                        @Override
+                                                        public void onSuccess(List<ImageLabel> labels) {
+                                                            // Task completed successfully
+                                                            // ...
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            // Task failed with an exception
+                                                            // ...
+                                                        }
+                                                    });
+
+                                            int finalI = i;
+                                            labeler.process(image)
+                                                    .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+                                                        @Override
+                                                        public void onSuccess(List<ImageLabel> labels) {
+                                                            // [START get_image_label_info]
+                                                            List<String> label2 = new ArrayList<String>();
+                                                            for (ImageLabel label : labels) {
+
+                                                                String text = label.getText();
+                                                                float confidence = label.getConfidence();
+                                                                int index = label.getIndex();
+
+                                                                label2.add(text);
 
 
-            StorageMetadata metadata = new StorageMetadata.Builder()
+                                                            }
+                                                            String dude = "";
+                                                            int k;
+                                                            if(label2.size()<4){
+                                                                k = label2.size();
+                                                            }
+                                                            else
+                                                                k=4;
+                                                            for(int j = 0;j<k;j++){
+                                                                if(!dude.equals("")){
+                                                                    dude = dude+" "+label2.get(j);
+                                                                }
+                                                                else
+                                                                    dude = dude+label2.get(j);
+
+                                                            }
+                                                            StorageMetadata metadata = new StorageMetadata.Builder()
+                                                                    .setCustomMetadata("Face Count", String.valueOf(finalI))
+                                                                    .setCustomMetadata("Contents", dude)
+                                                                    .build();
+
+
+                                                            ref.putFile(filePath, metadata)
+                                                                    .addOnSuccessListener(
+                                                                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                                                                @Override
+                                                                                public void onSuccess(
+                                                                                        UploadTask.TaskSnapshot taskSnapshot) {
+
+                                                                                    // Image uploaded successfully
+                                                                                    // Dismiss dialog
+                                                                                    progressDialog.dismiss();
+                                                                                    Toast
+                                                                                            .makeText(UploadImg.this,
+                                                                                                    "Image Uploaded!!",
+                                                                                                    Toast.LENGTH_SHORT)
+                                                                                            .show();
+                                                                                    Upload upload = new Upload(upload_image_name.trim(),
+                                                                                            taskSnapshot.getStorage().getDownloadUrl().toString());
+                                                                                    String uploadId = mDatabaseRef.push().getKey();
+                                                                                    mDatabaseRef.child(upload_image_name).setValue(upload);
+                                                                                }
+
+
+                                                                            }
+
+
+                                                                    )
+// This is not the On failure listener we want to get rid of
+                                                                    .addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception e) {
+
+                                                                            // Error, Image not uploaded
+                                                                            progressDialog.dismiss();
+                                                                            Toast
+                                                                                    .makeText(UploadImg.this,
+                                                                                            "Failed " + e.getMessage(),
+                                                                                            Toast.LENGTH_SHORT)
+                                                                                    .show();
+                                                                        }
+                                                                    })
+                                                                    .addOnProgressListener(
+                                                                            new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                                                                // Progress Listener for loading
+                                                                                // percentage on the dialog box
+                                                                                @Override
+                                                                                public void onProgress(
+                                                                                        UploadTask.TaskSnapshot taskSnapshot) {
+                                                                                    double progress
+                                                                                            = (100.0
+                                                                                            * taskSnapshot.getBytesTransferred()
+                                                                                            / taskSnapshot.getTotalByteCount());
+                                                                                    progressDialog.setMessage(
+                                                                                            "Uploaded "
+                                                                                                    + (int) progress + "%");
+                                                                                }
+                                                                            });
+
+                                                            IntBuffer buffer = IntBuffer.allocate(1);
+                                                            buffer.put(finalI);
+                                                            // [END get_face_info]
+                                                            // [END_EXCLUDE]
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(
+                                                            new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    // Task failed with an exception
+                                                                    // ...
+                                                                }
+                                                            });
+
+
+
+                                        }
+                                                    });
+
+            /*StorageMetadata metadata = new StorageMetadata.Builder()
                     .setCustomMetadata("Face Count", "Number")
                     .setCustomMetadata("Contents", "ML Tags")
                     .build();
@@ -415,7 +581,7 @@ public class UploadImg extends AppCompatActivity {
                                             "Uploaded "
                                                     + (int) progress + "%");
                                 }
-                            });
+                            });*/
 
         }
     }
@@ -499,6 +665,9 @@ public class UploadImg extends AppCompatActivity {
                                             faceCount("There is/are " + i + " person(s) in this picture");
                                         else
                                             faceCount("There are no faces in this picture");
+
+                                        IntBuffer buffer = IntBuffer.allocate(1);
+                                        buffer.put(i);
                                         // [END get_face_info]
                                         // [END_EXCLUDE]
                                     }

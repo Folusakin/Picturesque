@@ -292,11 +292,12 @@ public class DuplicateFind extends AppCompatActivity {
                                                     //filePath = Uri.parse(getIntent().getStringExtra(fileName));
                                                     Context context = getApplicationContext();
 
+                                                    openFileApp(v);
                                                     // Get a filepath from a URI
                                                     String uriFilepath = getFilePath(filePath);
                                                     File file = new File(filePath.getPath());
 
-                                                    file.delete();
+/*                                                    file.delete();
                                                     if(file.exists()){
                                                         try {
                                                             file.getCanonicalFile().delete();
@@ -307,7 +308,7 @@ public class DuplicateFind extends AppCompatActivity {
                                                         if(file.exists()){
                                                             getApplicationContext().deleteFile(file.getName());
                                                         }
-                                                    }
+                                                    }*/
 
 
 
@@ -461,6 +462,19 @@ public class DuplicateFind extends AppCompatActivity {
             result = str.substring(0, str.length() - 2);
         }
         return result;
+
+    }
+
+    public void openFileApp(View view)
+    {
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.google.android.apps.photosgo");
+
+        if(launchIntent != null)
+        {
+            startActivity(launchIntent);
+        }else{
+            Toast.makeText(DuplicateFind.this, "There is no package available", Toast.LENGTH_LONG).show();
+        }
     }
 
     /*public static boolean delete(Context context, Uri self) {

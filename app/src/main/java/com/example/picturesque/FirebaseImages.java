@@ -30,8 +30,8 @@ public class  FirebaseImages extends AppCompatActivity {
         setContentView(R.layout.activity_images);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3,RecyclerView.VERTICAL,false));
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+       /* mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3,RecyclerView.VERTICAL,false));*/
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressCircle = findViewById(R.id.progress_circle);
         mUploads = new ArrayList<>();
 

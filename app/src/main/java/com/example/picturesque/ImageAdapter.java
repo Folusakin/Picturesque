@@ -2,6 +2,7 @@ package com.example.picturesque;
 
 import android.content.Context;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+import java.util.Set;
+
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context mContext;
     private List<Upload> mUploads;
@@ -29,7 +34,32 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
-        holder.textViewName.setText(uploadCurrent.getName());
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference ImageRef = storageRef.child("images/"+uploadCurrent.getName());
+
+        ImageRef.getMetadata().addOnSuccessListener(
+                new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+
+                        String faceNumber = storageMetadata.getCustomMetadata("Face Count");
+                        String labels = storageMetadata.getCustomMetadata("Contents");
+                        int i = Integer.parseInt(faceNumber);
+                        if(i==0){
+                            holder.textViewName.setText(labels+"\n"+"There are no people in this picture");
+
+                        }
+                        else if(i==1) {
+                            holder.textViewName.setText(labels + "\n" + "There is 1 person in this picture");
+                        }
+                        else
+                            holder.textViewName.setText(labels + "\n" + "There are"+ faceNumber+"person in this picture");
+
+
+                    }
+                });
+
 
         System.out.println("THIS IS THE IMG URL" + uploadCurrent.getImageUrl().toString());
        // Picasso.with(mContext)

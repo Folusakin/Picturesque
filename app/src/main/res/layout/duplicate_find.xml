@@ -10,15 +10,16 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="225dp"
-        android:layout_height="150dp"
+        android:layout_width="212dp"
+        android:layout_height="137dp"
         android:layout_marginTop="16dp"
         android:background="#6D466B"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.172" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -34,9 +35,9 @@
 
     <Button
         android:id="@+id/btnChoose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="149dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
         android:text="Choose Image"
@@ -44,15 +45,15 @@
         app:layout_constraintEnd_toStartOf="@+id/btnFindDupes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.404" />
+        app:layout_constraintVertical_bias="0.323" />
 
     <Button
         android:id="@+id/btnFindDupes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="156dp"
+        android:layout_height="62dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="30dp"
         android:text="Find duplicates"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,22 +65,24 @@
         android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:layout_marginBottom="28dp"
         android:onClick="backClicked"
         android:text="Back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.851"
+        app:layout_constraintHorizontal_bias="0.578"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnCloudDelete"
-        app:layout_constraintVertical_bias="0.756" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/editTextTextPersonName2"
         android:layout_width="97dp"
         android:layout_height="42dp"
         android:layout_marginStart="36dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="175dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="We found"
@@ -93,7 +96,7 @@
     <EditText
         android:id="@+id/editTextTextPersonName3"
         android:layout_width="103dp"
-        android:layout_height="39dp"
+        android:layout_height="49dp"
         android:layout_marginTop="22dp"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="24dp"
@@ -102,7 +105,7 @@
         android:text="duplicates"
         app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/dupecount"
         app:layout_constraintTop_toBottomOf="@+id/btnFindDupes" />
 
@@ -110,7 +113,7 @@
         android:id="@+id/dupecount"
         android:layout_width="82dp"
         android:layout_height="38dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="22dp"
         android:fontFamily="sans-serif-black"
         android:text=" "
         android:textAlignment="center"
@@ -124,30 +127,32 @@
 
     <Button
         android:id="@+id/btnPhoneDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="61dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="20dp"
-        android:text="Delete from Phone"
+        android:text="Device Delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnCloudDelete"
+        app:layout_constraintHorizontal_bias="0.254"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/btnCloudDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="119dp"
+        android:layout_height="58dp"
         android:layout_marginTop="44dp"
-        android:text="Delete From Cloud"
+        android:layout_marginEnd="16dp"
+        android:text="Cloud Delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
-        app:layout_constraintVertical_bias="0.034" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
