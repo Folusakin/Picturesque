@@ -86,7 +86,7 @@ public class UploadImg extends AppCompatActivity {
         btnUpload = findViewById(R.id.btnUpload);
         imageView = findViewById(R.id.imageView);
         btnBack = findViewById(R.id.btnBack);
-        btnFindDupes = findViewById(R.id.btnFindDupes);
+       // btnFindDupes = findViewById(R.id.btnFindDupes);
         // btnDelete = findViewById(R.id.btnDelete);
 
         // get the Firebase  storage reference
@@ -433,7 +433,9 @@ public class UploadImg extends AppCompatActivity {
                                                                     dude = dude+label2.get(j);
 
                                                             }
+
                                                             StorageMetadata metadata = new StorageMetadata.Builder()
+
                                                                     .setCustomMetadata("Face Count", String.valueOf(finalI))
                                                                     .setCustomMetadata("Contents", dude)
                                                                     .build();

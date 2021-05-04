@@ -30,6 +30,9 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageMetadata;
@@ -66,6 +69,7 @@ public class DuplicateFind extends AppCompatActivity {
     // instance for firebase storage and StorageReference
     FirebaseStorage storage;
     StorageReference storageReference;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -351,12 +355,15 @@ public class DuplicateFind extends AppCompatActivity {
                                                 public void onClick(View v) {
                                                     System.out.println("Cloud DELETE BUTTON");
                                                     StorageReference storageRef = storage.getReference();
+                                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
                                                    // for (int i = 0; i < duplicate_substrings.size(); i++) {
                                                     for (String duplicate_substring : duplicate_substrings) {
                                                         // Create a reference to the file to delete
                                                         // StorageReference desertRef = storageRef.child(duplicate_substrings.get(i));
                                                         StorageReference dupeRef = storageRef.child(duplicate_substring);
+
+                                                      //  Query duplicatesQuery = dupeRef.child("").orderByChild()
 
                                                         // Delete the file
                                                         dupeRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {

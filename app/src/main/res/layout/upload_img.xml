@@ -37,10 +37,10 @@
 
     <Button
         android:id="@+id/btnUpload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="250dp"
+        android:layout_width="155dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="248dp"
         android:onClick="uploadClicked"
         android:text="Upload "
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,22 +61,14 @@
 
     <Button
         android:id="@+id/btnChoose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="155dp"
+        android:layout_height="49dp"
         android:layout_marginStart="20dp"
         android:text="Choose"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnUpload"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btnFindDupes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
-        android:text="Find duplicates"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnChoose" />
+
 
     <TextView
         android:id="@+id/textView2"

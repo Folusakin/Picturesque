@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Menu extends AppCompatActivity {
 
 
-    private Button findDupes, upload, logout, mltagging, viewcloudimgs;
+    private Button findDupes, upload, logout, viewcloudimgs;
 
  protected void onCreate(Bundle savedInstanceState){
      super.onCreate(savedInstanceState);
@@ -22,7 +22,7 @@ public class Menu extends AppCompatActivity {
      findDupes = findViewById(R.id.findDupes);
      upload = findViewById(R.id.upload);
      logout = findViewById(R.id.logout);
-     mltagging = findViewById(R.id.mltagging);
+
      viewcloudimgs = findViewById(R.id.viewcloudimgs);
 
 
@@ -57,13 +57,6 @@ public class Menu extends AppCompatActivity {
          }
      });
 
-     mltagging.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             Intent intent = new Intent(getApplicationContext(),FaceDetect.class);
-             startActivity(intent);
-         }
-     });
 
      viewcloudimgs.setOnClickListener(new View.OnClickListener() {
          @Override

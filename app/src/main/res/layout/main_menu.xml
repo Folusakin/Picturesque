@@ -7,80 +7,68 @@
 
     <TextView
         android:id="@+id/welcometext"
-        android:layout_width="270dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="54dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="2dp"
+        android:layout_width="199dp"
+        android:layout_height="52dp"
 
+        android:layout_marginTop="37dp"
+        android:layout_marginBottom="53dp"
         android:ems="10"
         android:fontFamily="@font/advent_pro_semibold"
         android:inputType="textPersonName"
-        android:text="Welcome to Picturesque"
-        app:layout_constraintBottom_toTopOf="@+id/findDupes"
+        android:text="Picturesque"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/upload"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.415"
+        app:layout_constraintHorizontal_bias="0.764"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/findDupes"
-        android:layout_width="179dp"
-        android:layout_height="54dp"
-        android:layout_marginBottom="30dp"
+        android:layout_width="180dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="47dp"
         android:text="Find Duplicates"
-        app:layout_constraintBottom_toTopOf="@+id/upload"
+        app:layout_constraintBottom_toTopOf="@+id/viewcloudimgs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/upload"
+        android:layout_width="190dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="41dp"
+        android:text="Upload Image"
+        app:layout_constraintBottom_toTopOf="@+id/findDupes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcometext" />
 
     <Button
-        android:id="@+id/upload"
-        android:layout_width="180dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="33dp"
-        android:text="Upload Image"
-        app:layout_constraintBottom_toTopOf="@+id/mltagging"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/findDupes" />
-
-    <Button
         android:id="@+id/logout"
-        android:layout_width="176dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="32dp"
+        android:layout_width="190dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="74dp"
         android:text="Logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.479"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewcloudimgs" />
 
     <Button
-        android:id="@+id/mltagging"
-        android:layout_width="181dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="23dp"
-        android:text="ML Tagging"
-        app:layout_constraintBottom_toTopOf="@+id/viewcloudimgs"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upload" />
-
-    <Button
         android:id="@+id/viewcloudimgs"
-        android:layout_width="180dp"
-        android:layout_height="57dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="190dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="45dp"
         android:text="Firebase Images"
         app:layout_constraintBottom_toTopOf="@+id/logout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mltagging" />
+        app:layout_constraintTop_toBottomOf="@+id/findDupes" />
 </androidx.constraintlayout.widget.ConstraintLayout>
